@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <table>
+        <thead>
+            <tr>
+                <td> Id </td>
+                <td> Nome </td>
+                <td> Tipo </td>
+                <td> Preço </td>
+            </tr>
+        </thead>
+        <tbody id="corpo">
+            
+        </tbody>
+    </table>
+
+    <script>
+        function retornaObjeto() {
+            return new Promise((resolve, reject) => {
+                setTimeout(()=> {
+                    const numero = Math.floor(Math.random() * 10) + 1;
+                    if(numero % 2 === 0) {
+                        const produtos = [
+                            { id: 1, nome: "Produto A", tipo: "Tipo 1", preco: 10.00 },
+                            { id: 2, nome: "Produto B", tipo: "Tipo 2", preco: 20.00 },
+                            { id: 3, nome: "Produto C", tipo: "Tipo 3", preco: 30.00 },
+                            { id: 4, nome: "Produto D", tipo: "Tipo 4", preco: 40.00 },
+                            { id: 5, nome: "Produto E", tipo: "Tipo 5", preco: 50.00 },
+                            { id: 6, nome: "Produto F", tipo: "Tipo 6", preco: 60.00 },
+                            { id: 7, nome: "Produto G", tipo: "Tipo 7", preco: 70.00 },
+                            { id: 8, nome: "Produto H", tipo: "Tipo 8", preco: 80.00 },
+                            { id: 9, nome: "Produto I", tipo: "Tipo 9", preco: 90.00 },
+                            { id: 10, nome: "Produto J", tipo: "Tipo 10", preco: 100.00 }
+                        ]
+                        resolve(produtos);
+                    }else{
+                        reject({res:"error", message: "Erro ao buscar produtos"});
+                    }
+                }, 4000);
+                    
+            });
+            
+        }
+        async function consumirPromessa() {
+            try {
+                const resposta = await retornaObjeto();
+
+                let soma = 0;
+                let maxPreco = resposta[0];
+                let minPreco = resposta[0];
+
+                resposta.forEach(element => {
+                    soma += element.preco;
+                    if(element.preco > maxPreco.preco) {
+                        maxPreco = element;
+                    }
+                    if(element.preco < minPreco.preco) {
+                        minPreco = element;
+                    }
+                });
+
+                const media = soma / resposta.length;
+                const corpo = document.getElementById("corpo");
+
+
+                resposta.forEach(p => {
+                    const linha = document.createElement('tr');
+
+                    linha.innerHTML = `
+                        <td>${p.id}</td>
+                        <td>${p.nome}</td>
+                        <td>${p.tipo}</td>
+                        <td>R$ ${p.preco}</td>
+                    `;
+                    corpo.appendChild(linha);
+
+                });
+
+            } catch (error){
+                document.getElementById('corpo').innerHTML =
+                    `<tr><td colspan="4">Erro: ${error.message}</td></tr>`;
+            }
+        }
+
+    consumirPromessa();
+    </script>
+    
+</body>
+</html>
